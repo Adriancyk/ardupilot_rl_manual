@@ -433,6 +433,23 @@ const AP_Param::Info Copter::var_info[] = {
     // ACRO_RP_EXPO moved to Command Model class
 
 
+#if MODE_RL_MANUAL_ENABLED == ENABLED
+    // AP_Float GeoCtrl_Kpx; // kpx for geometric controller
+    // AP_Float GeoCtrl_Kpy; // kpy for geometric controller
+    // AP_Float GeoCtrl_Kpz; // kpz for geometric controllerF
+    // AP_Float GeoCtrl_Kvx; // kvx for geometric controller
+    // AP_Float GeoCtrl_Kvy; // kvy for geometric controller
+    // AP_Float GeoCtrl_Kvz; // kvz for geometric controllerF
+    // AP_Float GeoCtrl_KRx; // kRx for geometric controller
+    // AP_Float GeoCtrl_KRy; // kRy for geometric controller
+    // AP_Float GeoCtrl_KRz; // kRz for geometric controllerF
+    // AP_Float GeoCtrl_KOx; // kOmegax for geometric controller
+    // AP_Float GeoCtrl_KOy; // kOmegay for geometric controller
+    // AP_Float GeoCtrl_KOz; // kOmegaz for geometric controller
+    // AP_Int8 l1enable; // enabling switch for L1 adaptive controller
+    // AP_Float cutoffFreq; // cutoff frequency for the LPF in the L1 adaptive controller (in rad/s)
+
+#endif
 
 #if MODE_ACRO_ENABLED == ENABLED
     // @Param: ACRO_TRAINER
@@ -1263,7 +1280,6 @@ ParametersG2::ParametersG2(void)
 #if MODE_ZIGZAG_ENABLED == ENABLED
     ,mode_zigzag_ptr(&copter.mode_zigzag)
 #endif
-
 #if MODE_ACRO_ENABLED == ENABLED || MODE_SPORT_ENABLED == ENABLED
     ,command_model_acro_rp(ACRO_RP_RATE_DEFAULT, ACRO_RP_EXPO_DEFAULT, 0.0f)
 #endif

@@ -670,6 +670,9 @@ public:
 #if MODE_GUIDED_ENABLED == ENABLED
     AP_Float guided_timeout;
 #endif
+#if MODE_RL_MANUAL_ENABLED == ENABLED
+
+#endif
 
     AP_Int8                 surftrak_mode;
     AP_Int8                 failsafe_dr_enable;

@@ -1995,6 +1995,7 @@ mode_mapping_apm = {
     23 : 'QACRO',
     24 : 'THERMAL',
     25 : 'LOITERALTQLAND',
+    29 : 'RL_MANUAL',
 }
 
 mode_mapping_acm = {
@@ -2025,6 +2026,7 @@ mode_mapping_acm = {
     25 : 'SYSTEMID',
     26 : 'AUTOROTATE',
     27 : 'AUTO_RTL',
+    29 : 'RL_MANUAL',
 }
 
 mode_mapping_rover = {
@@ -2041,7 +2043,8 @@ mode_mapping_rover = {
     11 : 'RTL',
     12 : 'SMART_RTL',
     15 : 'GUIDED',
-    16 : 'INITIALISING'
+    16 : 'INITIALISING',
+    29 : 'RL_MANUAL',
 }
 
 mode_mapping_tracker = {
@@ -2050,7 +2053,8 @@ mode_mapping_tracker = {
     2 : 'SCAN',
     4 : 'GUIDED',
     10 : 'AUTO',
-    16 : 'INITIALISING'
+    16 : 'INITIALISING',
+    29 : 'RL_MANUAL',    
 }
 
 mode_mapping_sub = {
@@ -2063,6 +2067,7 @@ mode_mapping_sub = {
     9: 'SURFACE',
     16: 'POSHOLD',
     19: 'MANUAL',
+    29 : 'RL_MANUAL',
 }
 
 mode_mapping_blimp = {

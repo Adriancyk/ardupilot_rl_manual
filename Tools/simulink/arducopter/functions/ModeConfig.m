@@ -198,6 +198,10 @@ classdef ModeConfig
                    propsStruct.name = 'Autorotate';
                    propsStruct.thr_man = false;
                    propsStruct.filter_msgs = filter_msgs_sysid;
+               case 29 % RL_Manual
+                   propsStruct.name = 'RL_Manual';
+                   propsStruct.thr_man = false;
+                   propsStruct.filter_msgs = filter_msgs_sysid;
            end
        end
     end

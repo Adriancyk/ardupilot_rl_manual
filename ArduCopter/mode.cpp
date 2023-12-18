@@ -63,12 +63,6 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
             break;
 #endif
 
-#if MODE_RL_MANUAL_ENABLED == ENABLED
-        case Mode::Number::RL_MANUAL:
-            ret = &mode_RL_Manual;
-            break;
-#endif
-
 #if MODE_GUIDED_ENABLED == ENABLED
         case Mode::Number::GUIDED:
             ret = &mode_guided;
@@ -160,6 +154,12 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
 #if MODE_ZIGZAG_ENABLED == ENABLED
         case Mode::Number::ZIGZAG:
             ret = &mode_zigzag;
+            break;
+#endif
+
+#if MODE_RL_MANUAL_ENABLED == ENABLED
+        case Mode::Number::RL_MANUAL:
+            ret = &mode_RL_Manual;
             break;
 #endif
 
