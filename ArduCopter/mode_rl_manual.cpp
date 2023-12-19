@@ -12,6 +12,7 @@
 #include "Copter.h"
 #include <AP_HAL/AP_HAL.h>
 #include <AP_Motors/AP_Motors_Class.h> // for sending motor speed
+#include "GCS_Mavlink.h"               // for sending text to GCS
 // #include "ACRL_trajectories.h"         // small libraries for trajectories at ACRL
 
 #if MODE_RL_MANUAL_ENABLED == ENABLED
@@ -29,7 +30,8 @@ bool ModeRL_Manual::init(bool ignore_checks)
     
     initTimeOffset = AP_HAL::micros() * 0.000001f; // initTimeOffset has the unit of second
 
-    gcs().send_text(MAV_SEVERITY_INFO, "TX2 mode initialization is done.");
+    gcs().send_text(MAV_SEVERITY_INFO, "TX2 RL_MANUAL mode initialization is done.");
+    gcs().send_named_float("RL_MANUAL_initTimeOffset", initTimeOffset);
     return true;
 }
 

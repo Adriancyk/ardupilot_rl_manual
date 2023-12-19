@@ -186,8 +186,8 @@ classdef ModeConfig
                    propsStruct.name = 'Follow';
                    propsStruct.thr_man = false;
                    propsStruct.filter_msgs = filter_msgs_sysid;
-               case 24 % Zigzag
-                   propsStruct.name = 'Zigzag';
+               case 24 % RL_Zigzag
+                   propsStruct.name = 'RL_Zigzag';
                    propsStruct.thr_man = false;
                    propsStruct.filter_msgs = filter_msgs_sysid;
                case 25 % Systemid

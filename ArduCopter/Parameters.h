@@ -627,9 +627,9 @@ public:
     AC_Autorotation arot;
 #endif
 
-#if MODE_ZIGZAG_ENABLED == ENABLED
+#if MODE_RL_ZIGZAG_ENABLED == ENABLED
     // we need a pointer to the mode for the G2 table
-    void *mode_zigzag_ptr;
+    //void *mode_RL_zigzag_ptr;
 #endif
 
     // command model parameters

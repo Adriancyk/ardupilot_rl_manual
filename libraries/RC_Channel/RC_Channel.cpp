@@ -165,8 +165,8 @@ const AP_Param::GroupInfo RC_Channel::var_info[] = {
     // @Values{Copter, Rover}: 57:Follow
     // @Values{Copter, Rover, Plane}: 58:Clear Waypoints
     // @Values{Rover}: 59:Simple Mode
-    // @Values{Copter}: 60:ZigZag
-    // @Values{Copter}: 61:ZigZag SaveWP
+    // @Values{Copter}: 60:RL_ZigZag
+    // @Values{Copter}: 61:RL_ZigZag SaveWP
     // @Values{Copter, Rover, Plane}: 62:Compass Learn
     // @Values{Rover}: 63:Sailboat Tack
     // @Values{Plane}: 64:Reverse Throttle
@@ -189,7 +189,7 @@ const AP_Param::GroupInfo RC_Channel::var_info[] = {
     // @Values{Rover}: 80:Viso Align
     // @Values{Copter, Rover, Plane, Blimp}: 81:Disarm
     // @Values{Plane}: 82:QAssist 3pos
-    // @Values{Copter}: 83:ZigZag Auto
+    // @Values{Copter}: 83:RL_ZigZag Auto
     // @Values{Copter, Plane}: 84:Air Mode
     // @Values{Copter, Plane}: 85:Generator
     // @Values{Plane}: 86: Non Auto Terrain Follow Disable

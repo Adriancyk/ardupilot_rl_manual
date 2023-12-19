@@ -75,8 +75,8 @@ enum class LogEvent : uint8_t {
     AVOIDANCE_PROXIMITY_DISABLE = 66,
     GPS_PRIMARY_CHANGED = 67,
     // 68, 69, 70 were winch events
-    ZIGZAG_STORE_A = 71,
-    ZIGZAG_STORE_B = 72,
+    RL_ZIGZAG_STORE_A = 71,
+    RL_ZIGZAG_STORE_B = 72,
     LAND_REPO_ACTIVE = 73,
     STANDBY_ENABLE = 74,
     STANDBY_DISABLE = 75,

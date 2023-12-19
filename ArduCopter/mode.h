@@ -34,7 +34,7 @@ public:
         SMART_RTL =    21,  // SMART_RTL returns to home by retracing its steps
         FLOWHOLD  =    22,  // FLOWHOLD holds position with optical flow without rangefinder
         FOLLOW    =    23,  // follow attempts to follow another vehicle or ground station
-        ZIGZAG    =    24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
+        RL_ZIGZAG   =  24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
         SYSTEMID  =    25,  // System ID mode produces automated system identification signals in the controllers
         AUTOROTATE =   26,  // Autonomous autorotation
         AUTO_RTL =     27,  // Auto RTL, this is not a true mode, AUTO will report as this mode if entered to perform a DO_LAND_START Landing sequence
@@ -1748,100 +1748,105 @@ protected:
     uint32_t last_log_ms;   // system time of last time desired velocity was logging
 };
 
-class ModeZigZag : public Mode {        
 
+class ModeRL_ZigZag : public Mode
+{
 public:
-    ModeZigZag(void);
-
-    // Inherit constructor
+    // inherit constructor
     using Mode::Mode;
-    Number mode_number() const override { return Number::ZIGZAG; }
-
-    enum class Destination : uint8_t {
-        A,  // Destination A
-        B,  // Destination B
+    enum STATES {   //enumerated data type representing all states in the FSM
+        ARMED, // 0
+        DISARMED, // 1
+        TAKEOFF, // 2
+        HOVER, // 3
+        LAND, // 4
+        TRAJECTORY, // 5
+        LOAD_TRAJECTORY, // 6
+        STATES_NULL     //empty state holder, value is the number of total states
     };
+    
+    // list of all control signals used to determine state transitions.
+    // They are set by mavlink cmd inputs and signals from controls
+    typedef struct INPUTSIGS{
+        bool arm_r = 0;                 // set when arming is completed
+        bool disarm_r = 0;
+        bool takeoff = 0;               // set when cmd is takeoff
+        bool takeoff_r = 0;             // set when takeoff is completed
+        bool land = 0;                  // set when cmd is land
+        bool land_r = 0;                // set when landing is completed
+        bool pause = 0;                 // set on bad trajectory input
+        bool new_trajectory = 0;        // set when new trajectory is sent through cmd
+        bool trajectory_r = 0;          // set when trajectory has been flown
+    }inputsigs_t;
 
-    enum class Direction : uint8_t {
-        FORWARD,        // moving forward from the yaw direction
-        RIGHT,          // moving right from the yaw direction
-        BACKWARD,       // moving backward from the yaw direction
-        LEFT,           // moving left from the yaw direction
-    } zigzag_direction;
+    // struct for implementing the FSM
+    struct FSM {    
+        STATES cur_state;               // the current state
+        STATES prev_state;              // the previous state
+        inputsigs_t inputsigs;          // all control signals
+        float begin;                   // the begin time of current state
+        float target_duration;         // the target duration of current state
+        float params[27];            // general parameters in cmd 
+    }fsm;
+
+    Number mode_number() const override { return Number::RL_ZIGZAG; }
 
     bool init(bool ignore_checks) override;
-    void exit() override;
-    void run() override;
+    virtual void run() override;
+    
+    bool requires_GPS() const override { return false; }
+    bool has_manual_throttle() const override { return true; }
+    bool allows_arming(AP_Arming::Method method) const override { return true; };
+    bool is_autopilot() const override { return false; }
+    bool allows_save_trim() const override { return true; }
+    bool allows_autotune() const override { return true; }
+    bool allows_flip() const override { return true; }
+    void determine_states(float currentTime);
+    void clear_sigs();
 
-    // auto control methods.  copter flies grid pattern
-    void run_auto();
-    void suspend_auto();
-    void init_auto();
+    const float GRAVITY_MAGNITUDE = 9.8; // gravitational acceleration
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(AP_Arming::Method method) const override { return true; }
-    bool is_autopilot() const override { return true; }
+    #if (REAL_OR_SITL==0) // SITL
+        const float kg_vehicleMass = 3; // SITL drone mass.    
+        const Matrix3f J = {0.023, 0, 0, 0, 0.023, 0, 0, 0, 0.0459}; // This is pulled from SIM_Motor.cpp
+        const Matrix3f Jinv = {43.478, 0, 0, 0, 43.478, 0, 0, 0, 21.786}; // hand-computed
+    #elif (REAL_OR_SITL==1) // Real for Q2S
+        const float kg_vehicleMass = 0.62;   // weight for the real drone
+        const Matrix3f J = {0.002016, 0, 0, 0, 0.001827, 0, 0, 0, 0.00322}; // This is from CAD model of the real drone
+        const Matrix3f Jinv = {496.03, 0, 0, 0, 547.345, 0, 0, 0, 310.559}; // hand-computed
+    #elif (REAL_OR_SITL==2) // Real for holybro
+        // const float kg_vehicleMass = 2.1;   // weight for the real drone
+        // const Matrix3f J = {0.03143, 0, 0, 0, 0.03743, 0, 0, 0, 0.02264}; // This is from CAD model of the real drone, center of mass
+        // const Matrix3f Jinv = {31.8167, 0, 0, 0, 26.7165, 0, 0, 0, 44.1696}; // hand-computed 
+        const float kg_vehicleMass = 2.1;   // weight for the real drone
+        const Matrix3f J = {0.03838, 0, 0, 0, 0.04284, 0, 0, 0, 0.02420}; // This is from CAD model of the real drone, center of mass
+        const Matrix3f Jinv = {26.0552, 0, 0, 0, 23.3427, 0, 0, 0, 41.3223}; // hand-computed   
 
-    // save current position as A or B.  If both A and B have been saved move to the one specified
-    void save_or_move_to_destination(Destination ab_dest);
-
-    // return manual control to the pilot
-    void return_to_manual_control(bool maintain_target);
-
-    static const struct AP_Param::GroupInfo var_info[];
+    #endif
+    VectorN<float,4> motorMixing(VectorN<float,4> thrustMomentCmd); // without battery compensation
+    VectorN<float,4> motorMixingBattComp(VectorN<float,4> thrustMomentCmd, float BattVolt); // with battery compensation
 
 protected:
-
-    const char *name() const override { return "ZIGZAG"; }
-    const char *name4() const override { return "ZIGZ"; }
-    uint32_t wp_distance() const override;
-    int32_t wp_bearing() const override;
-    float crosstrack_error() const override;
+    const char *name() const override { return "RL_ZIGZAG"; }
+    const char *name4() const override { return "RLZZ"; }
+    // The name() and name4() methods are for logging and display purposes.
 
 private:
-
-    void auto_control();
-    void manual_control();
-    bool reached_destination();
-    bool calculate_next_dest(Destination ab_dest, bool use_wpnav_alt, Vector3f& next_dest, bool& terrain_alt) const;
-    void spray(bool b);
-    bool calculate_side_dest(Vector3f& next_dest, bool& terrain_alt) const;
-    void move_to_side();
-
-    Vector2f dest_A;    // in NEU frame in cm relative to ekf origin
-    Vector2f dest_B;    // in NEU frame in cm relative to ekf origin
-    Vector3f current_dest; // current target destination (use for resume after suspending)
-    bool current_terr_alt;
-
-    // parameters
-    AP_Int8  _auto_enabled;    // top level enable/disable control
-#if HAL_SPRAYER_ENABLED
-    AP_Int8  _spray_enabled;   // auto spray enable/disable
-#endif
-    AP_Int8  _wp_delay;        // delay for zigzag waypoint
-    AP_Float _side_dist;       // sideways distance
-    AP_Int8  _direction;       // sideways direction
-    AP_Int16 _line_num;        // total number of lines
-
-    enum ZigZagState {
-        STORING_POINTS, // storing points A and B, pilot has manual control
-        AUTO,           // after A and B defined, pilot toggle the switch from one side to the other, vehicle flies autonomously
-        MANUAL_REGAIN   // pilot toggle the switch to middle position, has manual control
-    } stage;
-
-    enum AutoState {
-        MANUAL,         // not in ZigZag Auto
-        AB_MOVING,      // moving from A to B or from B to A
-        SIDEWAYS,       // moving to sideways
-    } auto_stage;
-
-    uint32_t reach_wp_time_ms = 0;  // time since vehicle reached destination (or zero if not yet reached)
-    Destination ab_dest_stored;     // store the current destination
-    bool is_auto;                   // enable zigzag auto feature which is automate both AB and sideways
-    uint16_t line_count = 0;        // current line number
-    int16_t line_num = 0;           // target line number
-    bool is_suspended;              // true if zigzag auto is suspended
+    float initTimeOffset; // record the initial bias when entering the TX2 mode. The unit is second.
+    Vector3f currentPosition; // storing the current position of the vehicle (NED in meters) 
+                              // This position used in TAKEOFF, HOVER, LAND to enable actions on the stored position when switched into these states.
+    Vector3f currentVelocity; // storing the current velocity of the vehicle (NED in meters) 
+                              // This velocity used in TAKEOFF, HOVER, LAND to enable actions on stored position when switched into states.                          
+    Vector3f currentAcceleration; // storing the current acc of the vehicle (NED in meters) 
+                              // This acc used in TAKEOFF, HOVER, LAND to enable actions on stored position when switched into states 
+    Vector3f currentRPY; // storing the current roll,pitch,yaw
+    Vector3f currentRPY_dot; // storing the current roll,pitch,yaw dot
+    Vector3f currentRPY_ddot; // storing the current roll,pitch,yaw dotdot
+    
+    float currentYaw; // storing the current yaw angle of the vehicle
+    bool refuseTraj = 0; // whether to refuse the new trajectory
+    VectorN<float,4> iterativeMotorMixing(VectorN<float, 4> w_input, VectorN<float, 4> thrustMomentCmd, float a_F, float b_F, float a_M, float b_M, float L, float D);
+    VectorN<float,16> mat4Inv(VectorN<float,4> coefficientRow1, VectorN<float,4> coefficientRow2, VectorN<float,4> coefficientRow3, VectorN<float,4> coefficientRow4);
 };
 
 #if MODE_AUTOROTATE_ENABLED == ENABLED

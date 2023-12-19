@@ -151,9 +151,9 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
             break;
 #endif
 
-#if MODE_ZIGZAG_ENABLED == ENABLED
-        case Mode::Number::ZIGZAG:
-            ret = &mode_zigzag;
+#if MODE_RL_ZIGZAG_ENABLED == ENABLED
+        case Mode::Number::RL_ZIGZAG:
+            ret = &mode_RL_zigzag;
             break;
 #endif
 

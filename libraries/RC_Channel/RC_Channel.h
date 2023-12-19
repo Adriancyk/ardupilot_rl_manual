@@ -162,8 +162,8 @@ public:
         FOLLOW       =        57, // follow mode
         CLEAR_WP     =        58, // clear waypoints
         SIMPLE       =        59, // simple mode
-        ZIGZAG       =        60, // zigzag mode
-        ZIGZAG_SaveWP =       61, // zigzag save waypoint
+        RL_ZIGZAG       =        60, // zigzag mode
+        RL_ZIGZAG_SaveWP =       61, // zigzag save waypoint
         COMPASS_LEARN =       62, // learn compass offsets
         SAILBOAT_TACK =       63, // rover sailboat tack
         REVERSE_THROTTLE =    64, // reverse throttle input
@@ -185,7 +185,7 @@ public:
         VISODOM_ALIGN =       80, // align visual odometry camera's attitude to AHRS
         DISARM =              81, // disarm vehicle
         Q_ASSIST =            82, // disable, enable and force Q assist
-        ZIGZAG_Auto =         83, // zigzag auto switch
+        RL_ZIGZAG_Auto =         83, // zigzag auto switch
         AIRMODE =             84, // enable / disable airmode for copter
         GENERATOR   =         85, // generator control
         TER_DISABLE =         86, // disable terrain following in CRUISE/FBWB modes

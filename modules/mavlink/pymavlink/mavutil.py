@@ -2022,7 +2022,7 @@ mode_mapping_acm = {
     21 : 'SMART_RTL',
     22 : 'FLOWHOLD',
     23 : 'FOLLOW',
-    24 : 'ZIGZAG',
+    24 : 'RL_ZIGZAG',
     25 : 'SYSTEMID',
     26 : 'AUTOROTATE',
     27 : 'AUTO_RTL',

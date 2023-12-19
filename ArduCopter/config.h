@@ -248,8 +248,8 @@
 
 //////////////////////////////////////////////////////////////////////////////
 // ZigZag - allow vehicle to fly in a zigzag manner with predefined point A B
-#ifndef MODE_ZIGZAG_ENABLED
-# define MODE_ZIGZAG_ENABLED !HAL_MINIMIZE_FEATURES
+#ifndef MODE_RL_ZIGZAG_ENABLED
+# define MODE_RL_ZIGZAG_ENABLED !HAL_MINIMIZE_FEATURES
 #endif
 
 //////////////////////////////////////////////////////////////////////////////

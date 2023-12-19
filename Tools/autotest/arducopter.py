@@ -4129,14 +4129,14 @@ class AutoTestCopter(AutoTest):
         if not took_off:
             raise NotAchievedException("Did not take off")
 
-    def ModeZigZag(self):
+    def ModeRL_ZigZag(self):
         '''test zigzag mode'''
         # set channel 8 for zigzag savewp and recentre it
         self.set_parameter("RC8_OPTION", 61)
 
         self.takeoff(alt_min=5, mode='LOITER')
 
-        ZIGZAG = 24
+        RL_ZIGZAG = 24
         j = 0
         slowdown_speed = 0.3 # because Copter takes a long time to actually stop
         self.start_subtest("Conduct ZigZag test for all 4 directions")
@@ -4146,7 +4146,7 @@ class AutoTestCopter(AutoTest):
             self.set_rc(4, 1420)
             self.wait_heading(352-j*90)
             self.set_rc(4, 1500)
-            self.change_mode(ZIGZAG)
+            self.change_mode(RL_ZIGZAG)
             self.progress("## Record Point A ##")
             self.set_rc(8, 1100)  # record point A
             self.set_rc(1, 1700)  # fly side-way for 20m
@@ -9696,7 +9696,7 @@ class AutoTestCopter(AutoTest):
              self.ParameterChecks,
              self.ManualThrottleModeChange,
              self.MANUAL_CONTROL,
-             self.ModeZigZag,
+             self.ModeRL_ZigZag,
              self.PosHoldTakeOff,
              self.ModeFollow,
              self.RangeFinderDrivers,

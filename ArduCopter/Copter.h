@@ -223,7 +223,7 @@ public:
     friend class ModeStabilize_Heli;
     friend class ModeSystemId;
     friend class ModeThrow;
-    friend class ModeZigZag;
+    friend class ModeRL_ZigZag;
     friend class ModeAutorotate;
     friend class ModeTurtle;
     friend class ModeRL_Manual;
@@ -1018,8 +1018,8 @@ private:
 #if MODE_FLOWHOLD_ENABLED == ENABLED
     ModeFlowHold mode_flowhold;
 #endif
-#if MODE_ZIGZAG_ENABLED == ENABLED
-    ModeZigZag mode_zigzag;
+#if MODE_RL_ZIGZAG_ENABLED == ENABLED
+    ModeRL_ZigZag mode_RL_zigzag;
 #endif
 #if MODE_AUTOROTATE_ENABLED == ENABLED
     ModeAutorotate mode_autorotate;

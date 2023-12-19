@@ -1092,7 +1092,7 @@
       <entry value="21" name="COPTER_MODE_SMART_RTL"/>
       <entry value="22" name="COPTER_MODE_FLOWHOLD"/>
       <entry value="23" name="COPTER_MODE_FOLLOW"/>
-      <entry value="24" name="COPTER_MODE_ZIGZAG"/>
+      <entry value="24" name="COPTER_MODE_RL_ZIGZAG"/>
       <entry value="25" name="COPTER_MODE_SYSTEMID"/>
       <entry value="26" name="COPTER_MODE_AUTOROTATE"/>
       <entry value="27" name="COPTER_MODE_AUTO_RTL"/>
